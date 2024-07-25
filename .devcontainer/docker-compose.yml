@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+    report_app_service:
+        container_name: report_app
+        image: report_app_image:1.0
+        build:
+            context: ..
+            dockerfile: .devcontainer/Dockerfile
+        volumes:
+            - ..:/report_app
+        command: sleep infinity

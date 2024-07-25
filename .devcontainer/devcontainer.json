@@ -1,0 +1,11 @@
+{
+    "name": "report_app",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "report_app_service",
+    "workspaceFolder": "/report_app",
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-python.python"]
+        }
+    }
+}
