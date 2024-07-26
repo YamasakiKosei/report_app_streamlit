@@ -1,7 +1,6 @@
 # コメント
 '''
 外装点検は、総合評価の合否に考慮されていない
-閉塞圧は、60~140kPa
 数値入力の桁数、確認
 Excel側で小さい数字は四捨五入される
 Excelを変更したら、入力するセルの位置を確認
@@ -62,7 +61,7 @@ fni3 = stObject('機能点検', '機能点検３', '３．ドアを開けたと�
 fni4 = stObject('機能点検', '機能点検４', '４．動作中・異常発生時のランプが点灯・点滅するか')
 
 peri1 = stObject('性能点検', '流量精度', '１．流量精度')
-peri2 = stObject('性能点検', '閉塞圧', '２．閉塞警報（60 ～ 140 kPa）')
+peri2 = stObject('性能点検', '閉塞圧', '２．閉塞警報')
 peri3 = stObject('性能点検', '性能点検３', '３．滴下センサー動作の確認')
 peri4 = stObject('性能点検', '性能点検４', '４．気泡検知機能の確認')
 
@@ -145,11 +144,11 @@ st.divider()
 st.subheader('性能点検')
 st.write('**流量点検**')
 col1, col2 = st.columns(2)
-with col2:
+with col1:
     set1 = st.number_input('設定値（ml/h）', value=120, min_value=0, step=1) # 設定値
     min1 = round(set1-(set1*0.1), 1)
     max1 = round(set1+(set1*0.1), 1)
-with col1:
+with col2:
     if '流量精度' not in st.session_state: st.session_state['流量精度'] = 0.0
     peri1.value = st.number_input(f'{peri1.label}（{str(min1)} ～ {str(max1)} ml/h）', value=st.session_state['流量精度'], min_value=0.0, format='%.1f', step=0.1) # 流量精度
     st.session_state['流量精度'] = peri1.value
@@ -157,8 +156,22 @@ with col1:
 st.write('**閉塞圧点検**')
 col1, col2 = st.columns(2)
 with col1:
-    peri2.value = st.number_input(peri2.label, min_value=0.0, format='%.2f', step=0.01) # 閉塞警報
-    peri2.bool = True if 60 <= peri2.value and peri2.value <= 140 else False
+    col2_1, col2_2, col2_3,= st.columns([10, 1, 9])
+    with col2_1:
+        set2 = st.number_input('規定値（kPa）', value=100.0, min_value=0.0, format='%.1f', step=0.1) # 設定値
+    with col2_2:
+        st.write('')
+        st.write('')
+        st.write('±')
+    with col2_3:
+        set3 = st.number_input(' ', value=10.0, min_value=0.0, format='%.1f', step=0.1) # 設定値
+min2 = round(set2-set3, 1)
+max2 = round(set2+set3, 1)
+with col2:
+    if '閉塞圧' not in st.session_state: st.session_state['閉塞圧'] = 0.0
+    peri2.value = st.number_input(f'{peri2.label}（{str(min2)} ～ {str(max2)} kPa）', value=st.session_state['閉塞圧'], min_value=0.0, format='%.1f', step=0.1) # 閉塞警報
+    st.session_state['閉塞圧'] = peri2.value
+    peri2.bool = True if min2 <= peri2.value and peri2.value <= max2 else False
 peri3.bool = st.checkbox(peri3.label) # 滴下センサー動作の確認
 peri4.bool = st.checkbox(peri4.label) # 気泡検知機能の確認
 st.divider()
@@ -231,6 +244,8 @@ def excel():
     sheet['F14'] = eli4.value
     sheet['F15'] = eli5.value
     # 性能点検
+    sheet['C25'] = f'{set1} ± 10％'
+    sheet['C26'] = f'{set2} ± {set3}'
     sheet['F25'] = peri1.value
     sheet['F26'] = peri2.value
     # 備考
