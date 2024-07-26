@@ -1,7 +1,25 @@
+# コメント
+'''
+外装点検は、総合評価の合否に考慮されていない
+閉塞圧は、60~140kPa
+数値入力の桁数、確認
+Excel側で小さい数字は四捨五入される
+Excelを変更したら、入力するセルの位置を確認
+'''
+
+file_path = './点検報告書/輸液ポンプ 点検報告書 org.xlsx'     # 雛形Excelのパス
+sheet_name = 'Original'                                    # 雛形Excelのパス
+eval_ctg = ['電気的安全性点検', '機能点検', '性能点検']       # 総合評価の評価項目
+ctg = ['電気的安全性点検', '外装点検', '機能点検', '性能点検'] # 点検項目
+
+
+
 import streamlit as st
 import datetime
 from openpyxl import load_workbook
 from io import BytesIO
+
+
 
 # クラス
 class stObject:
@@ -43,8 +61,8 @@ fni2 = stObject('機能点検', '機能点検２', '２．電源を入れた際�
 fni3 = stObject('機能点検', '機能点検３', '３．ドアを開けたとき自動的にチューブクランプが閉じるか')
 fni4 = stObject('機能点検', '機能点検４', '４．動作中・異常発生時のランプが点灯・点滅するか')
 
-peri1 = stObject('性能点検', '性能点検１', '１．**流量精度**：108～132mL/h')
-peri2 = stObject('性能点検', '性能点検２', '２．**閉塞警報**：140kPa')
+peri1 = stObject('性能点検', '流量精度', '１．流量精度')
+peri2 = stObject('性能点検', '閉塞圧', '２．閉塞警報（60 ～ 140 kPa）')
 peri3 = stObject('性能点検', '性能点検３', '３．滴下センサー動作の確認')
 peri4 = stObject('性能点検', '性能点検４', '４．気泡検知機能の確認')
 
@@ -125,13 +143,22 @@ st.divider()
 
 # 性能点検
 st.subheader('性能点検')
+st.write('**流量点検**')
+col1, col2 = st.columns(2)
+with col2:
+    set1 = st.number_input('設定値（ml/h）', value=120, min_value=0, step=1) # 設定値
+    min1 = round(set1-(set1*0.1), 1)
+    max1 = round(set1+(set1*0.1), 1)
+with col1:
+    if '流量精度' not in st.session_state: st.session_state['流量精度'] = 0.0
+    peri1.value = st.number_input(f'{peri1.label}（{str(min1)} ～ {str(max1)} ml/h）', value=st.session_state['流量精度'], min_value=0.0, format='%.1f', step=0.1) # 流量精度
+    st.session_state['流量精度'] = peri1.value
+    peri1.bool = True if min1 <= peri1.value and peri1.value <= max1 else False
+st.write('**閉塞圧点検**')
 col1, col2 = st.columns(2)
 with col1:
-    peri1.value = st.number_input(peri1.label, min_value=0.0, format='%.1f', step=0.1)
-    peri1.bool = True if 108 <= peri1.value and peri1.value <= 132 else False
-with col2:
-    peri2.value = st.number_input(peri2.label, min_value=0.0, format='%.2f', step=0.01)
-    peri2.bool = True if peri2.value else False
+    peri2.value = st.number_input(peri2.label, min_value=0.0, format='%.2f', step=0.01) # 閉塞警報
+    peri2.bool = True if 60 <= peri2.value and peri2.value <= 140 else False
 peri3.bool = st.checkbox(peri3.label) # 滴下センサー動作の確認
 peri4.bool = st.checkbox(peri4.label) # 気泡検知機能の確認
 st.divider()
@@ -140,7 +167,6 @@ st.divider()
 
 # 総合評価
 st.subheader('総合評価')
-eval_ctg = ['電気的安全性点検', '機能点検', '性能点検'] # 評価項目
 errorList = [instance for instance in stObject.getInstances() if instance.category in eval_ctg and instance.bool == False]
 # 評価
 if not errorList: st.success('**合格**') 
@@ -151,74 +177,10 @@ else:
     st.warning(''.join(text))
 st.divider()
 
-
-
 # 備考
 st.subheader('備考')
-text_area1 = st.text_area('')
+text_area1 = st.text_area(' ')
 st.divider()
-
-
-
-# 合格・不合格
-def evaluation(bool):
-    if bool == 'ー': return 'ー'
-    elif bool: return '合格'
-    else: return '不合格'
-
-# Excel
-def excel():
-    wb = load_workbook('./点検報告書/輸液ポンプ 点検報告書 org.xlsx')
-    sheet_name = 'Original'
-    sheet = wb[sheet_name]
-
-    # 機器情報
-    sheet['E3'] = info1.value
-    sheet['B5'] = info2.value
-    sheet['B6'] = info3.value
-    sheet['B7'] = info4.value
-    sheet['B8'] = info5.value
-    sheet['E8'] = info6.value
-    # 電気的安全性点検
-    sheet['F11'] = eli1.value
-    sheet['F12'] = eli2.value
-    sheet['F13'] = eli3.value
-    sheet['F14'] = eli4.value
-    sheet['F15'] = eli5.value
-    sheet['H11'] = evaluation(eli1.bool)
-    sheet['H12'] = evaluation(eli2.bool)
-    sheet['H13'] = evaluation(eli3.bool)
-    sheet['H14'] = evaluation(eli4.bool)
-    sheet['H15'] = evaluation(eli5.bool)
-    
-    # 外装点検
-    sheet['H16'] = evaluation(outi1.bool)
-    sheet['H17'] = evaluation(outi2.bool)
-    sheet['H18'] = evaluation(outi3.bool)
-    sheet['H19'] = evaluation(outi4.bool)
-    sheet['H20'] = evaluation(outi5.bool)
-    # 機能点検
-    sheet['H21'] = evaluation(fni1.bool)
-    sheet['H22'] = evaluation(fni2.bool)
-    sheet['H23'] = evaluation(fni3.bool)
-    sheet['H24'] = evaluation(fni4.bool)
-    # 性能点検
-    sheet['F25'] = peri1.value
-    sheet['F26'] = peri2.value
-    sheet['H25'] = evaluation(peri1.bool)
-    sheet['H26'] = evaluation(peri2.bool)
-    sheet['H27'] = evaluation(peri3.bool)
-    sheet['H28'] = evaluation(peri4.bool)
-    # 備考
-    sheet['B29'] = text_area1
-    # 総合評価
-    sheet['H32'] = '合格' if not errorList else '不合格'
-    # 保存
-    byte_xlsx = BytesIO()
-    wb.save(byte_xlsx)
-    wb.close()
-    byte_xlsx.seek(0)
-    return byte_xlsx
 
 
 
@@ -245,6 +207,43 @@ if toggle:
 st.divider()
 
 # ダウンロードボタン
+# Excel 入力
+def excel():
+    wb = load_workbook(file_path)
+    sheet = wb[sheet_name]
+    
+    # 合格・不合格
+    bools = [instance.bool for instance in stObject.getInstances() if instance.category in ctg] # boolをすべて取得
+    for i, bool in enumerate(bools, start=11):
+        sheet[f'H{i}'] = ('ー' if bool == 'ー' else '合格' if bool else '不合格') # H11から入力
+
+    # 機器情報
+    sheet['E3'] = info1.value
+    sheet['B5'] = info2.value
+    sheet['B6'] = info3.value
+    sheet['B7'] = info4.value
+    sheet['B8'] = info5.value
+    sheet['E8'] = info6.value
+    # 電気的安全性点検
+    sheet['F11'] = eli1.value
+    sheet['F12'] = eli2.value
+    sheet['F13'] = eli3.value
+    sheet['F14'] = eli4.value
+    sheet['F15'] = eli5.value
+    # 性能点検
+    sheet['F25'] = peri1.value
+    sheet['F26'] = peri2.value
+    # 備考
+    sheet['B29'] = text_area1
+    # 総合評価
+    sheet['H32'] = '合格' if not errorList else '不合格'
+    # 保存
+    byte_xlsx = BytesIO()
+    wb.save(byte_xlsx)
+    wb.close()
+    byte_xlsx.seek(0)
+    return byte_xlsx
+
 file = excel()
 file_name = st.session_state['ファイル名'] + '.xlsx'
 mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
