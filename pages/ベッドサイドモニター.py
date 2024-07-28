@@ -168,6 +168,7 @@ if toggle_peri4:
     col1, col2 = st.columns(2)
     with col1:
         set1 = st.number_input('設定値（℃）', value=37.0, format='%.1f', step=0.1)
+        set1 = round(set1, 1)
         min1 = round(set1-0.1, 1)
         max1 = round(set1+0.1, 1)
     with col2:
@@ -272,7 +273,7 @@ def excel():
     sheet['F14'] = eli4.value
     sheet['F15'] = eli5.value
     # 性能点検
-    sheet['D26'] = f'：{round(set1, 1)} ± 0.1℃        （'
+    sheet['D26'] = f'：{set1} ± 0.1℃        （'
     sheet['C27'] = f'最高血圧警報測定(上限値)：{('  '*(3-len(str(set2))))+str(str(set2))}mmHg（'
     sheet['C28'] = f'最高血圧警報測定(下限値)：{('  '*(3-len(str(set3))))+str(str(set3))}mmHg（'
     sheet['F23'] = peri1.value
@@ -315,5 +316,5 @@ if st.session_state['プログレスバー']:
         time.sleep(0.01)
     st.success(file_name + ' をダウンロードしました')
     st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
-    # 初期化
-    st.session_state.clear()
+    st.session_state['ダウンロードボタン'] = False
+    st.session_state['プログレスバー'] = False

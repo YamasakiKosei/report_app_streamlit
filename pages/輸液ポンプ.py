@@ -259,7 +259,7 @@ def excel():
     sheet['F15'] = eli5.value
     # 性能点検
     sheet['C25'] = f'{set1} ± 10％'
-    sheet['C26'] = f'{round(set2,1)} ± {round(set3,1)}'
+    sheet['C26'] = str(round(set2, 1)) + ' ± ' + str(round(set3, 1))
     sheet['F25'] = peri1.value
     sheet['F26'] = peri2.value
     # 備考
@@ -297,5 +297,5 @@ if st.session_state['プログレスバー']:
         time.sleep(0.01)
     st.success(file_name + ' をダウンロードしました')
     st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
-    # 初期化
-    st.session_state.clear()
+    st.session_state['ダウンロードボタン'] = False
+    st.session_state['プログレスバー'] = False

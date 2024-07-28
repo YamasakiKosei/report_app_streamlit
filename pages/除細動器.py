@@ -242,5 +242,5 @@ if st.session_state['プログレスバー']:
         time.sleep(0.01)
     st.success(file_name + ' をダウンロードしました')
     st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
-    # 初期化
-    st.session_state.clear()
+    st.session_state['ダウンロードボタン'] = False
+    st.session_state['プログレスバー'] = False
