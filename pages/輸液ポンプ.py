@@ -1,9 +1,8 @@
 # コメント
 '''
 外装点検は、総合評価の合否に考慮されていない
-数値入力の桁数、確認
-Excel側で小さい数字は四捨五入される
-Excelを変更したら、入力するセルの位置を確認
+Excelを変更したら、入力するセルの位置
+セルには4桁～少数第一位まで表示できる
 '''
 
 file_path = './点検報告書/輸液ポンプ 点検報告書 org.xlsx'     # 雛形Excelのパス
@@ -17,6 +16,7 @@ import streamlit as st
 import datetime
 from openpyxl import load_workbook
 from io import BytesIO
+import time
 
 
 
@@ -70,6 +70,16 @@ peri4 = stObject('性能点検', '性能点検４', '４．気泡検知機能の
 # Web
 st.title('輸液ポンプ 点検報告書')
 st.caption('点検報告書を作成し、Excel形式で保存できます')
+col1, col2 = st.columns([1,2])
+with col1:
+    col1_1, col1_2, col1_3 = st.columns([4,1,8])
+    with col1_1:
+        st.page_link('Home.py', label='ホーム')
+    with col1_2:
+        st.write('**>**')
+    with col1_3:
+        st.page_link('pages/輸液ポンプ.py', label='輸液ポンプ')
+st.divider()
 
 
 
@@ -150,7 +160,9 @@ with col1:
     max1 = round(set1+(set1*0.1), 1)
 with col2:
     if '流量精度' not in st.session_state: st.session_state['流量精度'] = 0.0
-    peri1.value = st.number_input(f'{peri1.label}（{str(min1)} ～ {str(max1)} ml/h）', value=st.session_state['流量精度'], min_value=0.0, format='%.1f', step=0.1) # 流量精度
+    def update_peri1():
+        st.session_state['流量精度'] = st.session_state['新流量精度']
+    peri1.value = st.number_input(f'{peri1.label}（{str(min1)} ～ {str(max1)} ml/h）', value=st.session_state['流量精度'], min_value=0.0, format='%.1f', step=0.1, key='新流量精度', on_change=update_peri1) # 流量精度
     st.session_state['流量精度'] = peri1.value
     peri1.bool = True if min1 <= peri1.value and peri1.value <= max1 else False
 st.write('**閉塞圧点検**')
@@ -169,7 +181,9 @@ min2 = round(set2-set3, 1)
 max2 = round(set2+set3, 1)
 with col2:
     if '閉塞圧' not in st.session_state: st.session_state['閉塞圧'] = 0.0
-    peri2.value = st.number_input(f'{peri2.label}（{str(min2)} ～ {str(max2)} kPa）', value=st.session_state['閉塞圧'], min_value=0.0, format='%.1f', step=0.1) # 閉塞警報
+    def update_peri2():
+        st.session_state['閉塞圧'] = st.session_state['新閉塞圧']
+    peri2.value = st.number_input(f'{peri2.label}（{str(min2)} ～ {str(max2)} kPa）', value=st.session_state['閉塞圧'], min_value=0.0, format='%.1f', step=0.1, key='新閉塞圧' , on_change=update_peri2) # 閉塞警報
     st.session_state['閉塞圧'] = peri2.value
     peri2.bool = True if min2 <= peri2.value and peri2.value <= max2 else False
 peri3.bool = st.checkbox(peri3.label) # 滴下センサー動作の確認
@@ -245,7 +259,7 @@ def excel():
     sheet['F15'] = eli5.value
     # 性能点検
     sheet['C25'] = f'{set1} ± 10％'
-    sheet['C26'] = f'{set2} ± {set3}'
+    sheet['C26'] = f'{round(set2,1)} ± {round(set3,1)}'
     sheet['F25'] = peri1.value
     sheet['F26'] = peri2.value
     # 備考
@@ -262,7 +276,26 @@ def excel():
 file = excel()
 file_name = st.session_state['ファイル名'] + '.xlsx'
 mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-download_button = st.download_button(label='ダウンロード', data=file, file_name=file_name, mime=mime, use_container_width=True)
 
-if download_button: st.success(file_name + ' をダウンロードしました')
-st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
+# 初期化
+if 'ダウンロードボタン' not in st.session_state: st.session_state['ダウンロードボタン'] = False
+if 'プログレスバー' not in st.session_state: st.session_state['プログレスバー'] = False
+
+# ダウンロードボタン
+if st.button('作成', use_container_width=True):
+    st.write(f'{file_name} を作成しました\n\n下部の「ダウンロード」からファイルをダウンロードしてください')
+    st.session_state['ダウンロードボタン'] = True
+if st.session_state['ダウンロードボタン']:
+    download_button = st.download_button(label='ダウンロード', data=file, file_name=file_name, mime=mime, use_container_width=True)
+    if download_button: st.session_state['プログレスバー'] = True
+
+# プログレスバー
+if st.session_state['プログレスバー']:
+    progress_bar = st.progress(0) # 進行バーの初期化
+    for i in range(100):
+        progress_bar.progress(i + 1)
+        time.sleep(0.01)
+    st.success(file_name + ' をダウンロードしました')
+    st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
+    # 初期化
+    st.session_state.clear()

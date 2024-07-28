@@ -4,10 +4,10 @@
 Excelを変更したら、入力するセルの位置を確認
 '''
 
-file_path = './点検報告書/シリンジポンプ 点検報告書 org.xlsx'     # 雛形Excelのパス
-sheet_name = 'Original'                                        # 雛形Excelのパス
-eval_ctg = ['電気的安全性点検', '機能点検', '性能点検']           # 総合評価の評価項目
-ctg = ['電気的安全性点検', '外装点検', '機能点検', '性能点検']     # 点検項目
+file_path = './点検報告書/ベッドサイドモニター 点検報告書 org.xlsx' # 雛形Excelのパス
+sheet_name = 'Original'                                          # 雛形Excelのパス
+eval_ctg = ['電気的安全性点検', '機能点検', '性能点検']             # 総合評価の評価項目
+ctg = ['電気的安全性点検', '外装点検', '機能点検', '性能点検']       # 点検項目
 
 
 
@@ -42,33 +42,32 @@ info4 = stObject('機器情報', '機器管理番号', '４．機器管理番号
 info5 = stObject('機器情報', '購入年月日', '５．購入年月日')
 info6 = stObject('機器情報', '実施年月日', '６．実施年月日')
 
-eli1 = stObject('電気的安全性点検', '接触電流（NC）', '正常状態（NC）：100μA以下')
-eli2 = stObject('電気的安全性点検', '接触電流（SFC）', '単一故障状態（SFC）：500μA以下')
-eli3 = stObject('電気的安全性点検', '接地漏れ電流（NC）', '正常状態（NC）：5,000μA以下')
-eli4 = stObject('電気的安全性点検', '接地漏れ電流（SFC）', '単一故障状態（SFC）：10,000μA以下')
+eli1 = stObject('電気的安全性点検', '接触電流（NC）', '正常状態（NC）：100μA以下', '   ー', 'ー')
+eli2 = stObject('電気的安全性点検', '接触電流（SFC）', '単一故障状態（SFC）：500μA以下', '   ー', 'ー')
+eli3 = stObject('電気的安全性点検', '接地漏れ電流（NC）', '正常状態（NC）：5,000μA以下', '   ー', 'ー')
+eli4 = stObject('電気的安全性点検', '接地漏れ電流（SFC）', '単一故障状態（SFC）：10,000μA以下', '   ー', 'ー')
 eli5 = stObject('電気的安全性点検', '接地線抵抗', '0.2Ω以下', '   ー', 'ー')
 
 outi1 = stObject('外装点検', '外装点検１', '１．装置に汚れ、ひび割れ、破損がないか')
 outi2 = stObject('外装点検', '外装点検２', '２．操作パネルの傷、はく離がないか')
 outi3 = stObject('外装点検', '外装点検３', '３．部品のゆるみ、ねじ、ナットのゆるみがないか')
-outi4 = stObject('外装点検', '外装点検４', '４．チューブクランプの破損がないか')
-outi5 = stObject('外装点検', '外装点検５', '５．電源コードの破損がないか')
+outi4 = stObject('外装点検', '外装点検４', '４．電源コードの破損がないか')
 
-fni1 = stObject('機能点検', '機能点検１', '１．スライダーが左右へ移動できるか')
+fni1 = stObject('機能点検', '機能点検１', '１．現在時刻の確認')
 fni2 = stObject('機能点検', '機能点検２', '２．電源を入れた際にセルフチェック機能が働くか')
-fni3 = stObject('機能点検', '機能点検３', '３．開始・停止・早送り等のスイッチが正常に動作するか')
-fni4 = stObject('機能点検', '機能点検４', '４．動作中・異常発生時のランプが点灯・点滅するか')
-fni5 = stObject('機能点検', '機能点検５', '５．フックが正常に動作するか')
+fni3 = stObject('機能点検', '機能点検３', '３．動作中・異常発生時のランプが点灯・点滅するか')
 
-peri1 = stObject('性能点検', '流量精度', '１．流量精度')
-peri2 = stObject('性能点検', '閉塞圧', '２．閉塞圧')
-peri3 = stObject('性能点検', '性能点検３', '３．シリンジサイズの検出されるか')
-peri4 = stObject('性能点検', '性能点検４', '４．押し子・シリンジ外れ警報がなるか')
+peri1 = stObject('性能点検', '酸素飽和度', '１．酸素飽和度測定精度（93 ～ 100 %）')
+peri2 = stObject('性能点検', '脈拍数', '２．脈拍数測定精度（69 ～ 75 拍）')
+peri3 = stObject('性能点検', '心電図', '３．入力した波形が正常に出力されるか')
+peri4 = stObject('性能点検', '体温部', '４．体温測定精度', '   ー', 'ー')
+peri5 = stObject('性能点検', '血圧部（上限）', '５．最高血圧警報測定(上限値)')
+peri6 = stObject('性能点検', '血圧部（下限）', '６．最高血圧警報測定(下限値)')
 
 
 
 # Web
-st.title('シリンジポンプ 点検報告書')
+st.title('ベッドサイドモニター 点検報告書')
 st.caption('点検報告書を作成し、Excel形式で保存できます')
 col1, col2 = st.columns([1,2])
 with col1:
@@ -78,7 +77,7 @@ with col1:
     with col1_2:
         st.write('**>**')
     with col1_3:
-        st.page_link('pages/シリンジポンプ.py', label='シリンジポンプ')
+        st.page_link('pages/ベッドサイドモニター.py', label='ベッドサイドモニター')
 st.divider()
 
 
@@ -110,27 +109,29 @@ st.divider()
 st.header('点検')
 
 # 電気的安全性点検
-st.subheader('電気的安全性点検')
-st.write('**接触電流**')
-col1, col2 = st.columns(2)
-with col1:
-    eli1.value = st.number_input(eli1.label, min_value=0.0, format='%.1f', step=0.1) # 接触電流（NC）
-    eli1.bool = True if eli1.value <= 100 else False
-with col2:
-    eli2.value = st.number_input(eli2.label, min_value=0.0, format='%.1f', step=0.1) # 接触電流（SFC）
-    eli2.bool = True if eli2.value <= 500 else False
-st.write('**接地漏れ電流**')
-col1, col2 = st.columns(2)
-with col1:
-    eli3.value = st.number_input(eli3.label, min_value=0.0, format='%.1f', step=0.1) # 接地漏れ電流（NC）
-    eli3.bool = True if eli3.value <= 5000 else False
-with col2:
-    eli4.value = st.number_input(eli4.label, min_value=0.0, format='%.1f', step=0.1) # 接地漏れ電流（SFC）
-    eli4.bool = True if eli4.value <= 10000 else False
-toggle1 = st.toggle('**接地線抵抗**')
+toggle1 = st.toggle('電気的安全性点検')
 if toggle1:
-    eli5.value = st.number_input(eli5.label, min_value=0.0, format='%.3f', step=0.001) # 接地線抵抗
-    eli5.bool = True if eli5.value <= 0.2 else False
+    st.subheader('電気的安全性点検')
+    st.write('**接触電流**')
+    col1, col2 = st.columns(2)
+    with col1:
+        eli1.value = st.number_input(eli1.label, min_value=0.0, format='%.1f', step=0.1) # 接触電流（NC）
+        eli1.bool = True if eli1.value <= 100 else False
+    with col2:
+        eli2.value = st.number_input(eli2.label, min_value=0.0, format='%.1f', step=0.1) # 接触電流（SFC）
+        eli2.bool = True if eli2.value <= 500 else False
+    st.write('**接地漏れ電流**')
+    col1, col2 = st.columns(2)
+    with col1:
+        eli3.value = st.number_input(eli3.label, min_value=0.0, format='%.1f', step=0.1) # 接地漏れ電流（NC）
+        eli3.bool = True if eli3.value <= 5000 else False
+    with col2:
+        eli4.value = st.number_input(eli4.label, min_value=0.0, format='%.1f', step=0.1) # 接地漏れ電流（SFC）
+        eli4.bool = True if eli4.value <= 10000 else False
+    toggle1 = st.toggle('**接地線抵抗**')
+    if toggle1:
+        eli5.value = st.number_input(eli5.label, min_value=0.0, format='%.3f', step=0.001) # 接地線抵抗
+        eli5.bool = True if eli5.value <= 0.2 else False
 st.divider()
 
 # 外装点検
@@ -138,57 +139,69 @@ st.subheader('外装点検', help='総合評価には含まれません')
 outi1.bool = st.checkbox(outi1.label) # 装置に汚れ、ひび割れ、破損がないか
 outi2.bool = st.checkbox(outi2.label) # 操作パネルの傷、はく離がないか
 outi3.bool = st.checkbox(outi3.label) # 部品のゆるみ、ねじ、ナットのゆるみがないか
-outi4.bool = st.checkbox(outi4.label) # チューブクランプの破損がないか
-outi5.bool = st.checkbox(outi5.label) # 電源コードの破損がないか
+outi4.bool = st.checkbox(outi4.label) # 電源コードの破損がないか
 st.divider()
 
 # 機能点検
 st.subheader('機能点検')
-fni1.bool = st.checkbox(fni1.label) # スライダーが左右へ移動できるか
+fni1.bool = st.checkbox(fni1.label) # 現在時刻の確認
 fni2.bool = st.checkbox(fni2.label) # 電源を入れた際にセルフチェック機能が働くか
-fni3.bool = st.checkbox(fni3.label) # 開始・停止・早送り等のスイッチが正常に動作するか
-fni4.bool = st.checkbox(fni4.label) # 動作中・異常発生時のランプが点灯・点滅するか
-fni5.bool = st.checkbox(fni5.label) # フックが正常に動作するか
+fni3.bool = st.checkbox(fni3.label) # 動作中・異常発生時のランプが点灯・点滅するか
 st.divider()
 
 # 性能点検
 st.subheader('性能点検')
-st.write('**流量点検**')
+st.write('**SPO2**')
 col1, col2 = st.columns(2)
 with col1:
-    set1 = st.number_input('設定値（ml/h）', value=120, min_value=0, step=1) # 設定値
-min1 = round(set1-(set1*0.03), 1)
-max1 = round(set1+(set1*0.03), 1)
+    peri1.value = st.number_input(peri1.label, min_value=0, max_value=100, format='%d', step=1) # 酸素飽和度測定精度
+    peri1.bool = True if 93 <= peri1.value and peri1.value <= 100 else False
 with col2:
-    if '流量精度' not in st.session_state: st.session_state['流量精度'] = 0.0
-    def update_peri1():
-        st.session_state['流量精度'] = st.session_state['新流量精度']
-    peri1.value = st.number_input(f'{peri1.label}（{str(min1)} ～ {str(max1)} ml/h）', value=st.session_state['流量精度'], min_value=0.0, format='%.1f', step=0.1, key='新流量精度', on_change=update_peri1) # 流量精度
-    st.session_state['流量精度'] = peri1.value
-    peri1.bool = True if min1 <= peri1.value and peri1.value <= max1 else False
-st.write('**閉塞圧点検**')
+    peri2.value = st.number_input(peri2.label, min_value=0, step=1) # 脈拍数測定精度
+    peri2.bool = True if 69 <= peri2.value and peri2.value <= 75 else False
+st.write('**心電図**')
+peri3.bool = st.checkbox(peri3.label) # 入力した波形が正常に出力されるか
+st.write('**体温部**')
+set1 = 'ー'
+toggle_peri4 = st.toggle(peri4.label)
+if toggle_peri4:
+    col1, col2 = st.columns(2)
+    with col1:
+        set1 = st.number_input('設定値（℃）', value=37.0, format='%.1f', step=0.1)
+        min1 = round(set1-0.1, 1)
+        max1 = round(set1+0.1, 1)
+    with col2:
+        if '体温測定精度' not in st.session_state: st.session_state['体温測定精度'] = 0.0
+        def update_peri4():
+            st.session_state['体温測定精度'] = st.session_state['新体温測定精度']
+        peri4.value = st.number_input(f'{peri4.label}（{str(min1)} ～ {str(max1)} ℃）', value=st.session_state['体温測定精度'], format='%.1f', step=0.1, key='新体温測定精度', on_change=update_peri4) # 体温測定精度
+        st.session_state['体温測定精度'] = peri4.value
+        peri4.bool = True if min1 <= peri4.value and peri4.value <= max1 else False
+st.write('**血圧部**')
 col1, col2 = st.columns(2)
 with col1:
-    col2_1, col2_2, col2_3,= st.columns([10, 1, 9])
-    with col2_1:
-        set2 = st.number_input('規定値（kPa）', value=100.0, min_value=0.0, format='%.1f', step=0.1) # 設定値
-    with col2_2:
-        st.write('')
-        st.write('')
-        st.write('±')
-    with col2_3:
-        set3 = st.number_input(' ', value=10.0, min_value=0.0, format='%.1f', step=0.1) # 設定値
-min2 = round(set2-set3, 1)
-max2 = round(set2+set3, 1)
+    set2 = st.number_input('設定値（mmHg）', value=120, step=1)
+    min2 = set2-20
+    max2 = set2+130
 with col2:
-    if '閉塞圧' not in st.session_state: st.session_state['閉塞圧'] = 0.0
-    def update_peri2():
-        st.session_state['閉塞圧'] = st.session_state['新閉塞圧']
-    peri2.value = st.number_input(f'{peri2.label}（{str(min2)} ～ {str(max2)} kPa）', value=st.session_state['閉塞圧'], min_value=0.0, format='%.1f', step=0.1, key='新閉塞圧' , on_change=update_peri2) # 閉塞警報
-    st.session_state['閉塞圧'] = peri2.value
-    peri2.bool = True if min2 <= peri2.value and peri2.value <= max2 else False
-peri3.bool = st.checkbox(peri3.label) # シリンジサイズの検出されるか
-peri4.bool = st.checkbox(peri4.label) # 押し子・シリンジ外れ警報がなるか
+    if '血圧部（上限）' not in st.session_state: st.session_state['血圧部（上限）'] = 0
+    def update_peri5():
+        st.session_state['血圧部（上限）'] = st.session_state['新血圧部（上限）']
+    peri5.value = st.number_input(f'{peri5.label}（{str(min2)} ～ {str(max2)} mmHg）', value=st.session_state['血圧部（上限）'], format='%d', step=1, key='新血圧部（上限）', on_change=update_peri5) # 最高血圧警報測定(上限値)
+    st.session_state['血圧部（上限）'] = peri5.value
+    peri5.bool = True if min2 <= peri5.value and peri5.value <= max2 else False
+col1, col2 = st.columns(2)
+with col1:
+    set3 = st.number_input('設定値（mmHg）', value=80, step=1)
+    min3 = set3-20
+    max3 = set3+70
+with col2:
+    if '血圧部（下限）' not in st.session_state: st.session_state['血圧部（下限）'] = 0
+    def update_peri6():
+        st.session_state['血圧部（下限）'] = st.session_state['新血圧部（下限）']
+    peri6.value = st.number_input(f'{peri6.label}（{str(min3)} ～ {str(max3)} mmHg）', value=st.session_state['血圧部（下限）'], format='%d', step=1, key='新血圧部（下限）', on_change=update_peri6) # 最高血圧警報測定(下限値)
+    st.session_state['血圧部（下限）'] = peri6.value
+    peri6.bool = True if min3 <= peri6.value and peri6.value <= max3 else False
 st.divider()
 
 
@@ -234,6 +247,7 @@ if toggle:
     st.text_input('新しいファイル名', key='新ファイル名', value=st.session_state['ファイル名'], on_change=update_file_name)
 st.divider()
 
+# ダウンロードボタン
 # Excel 入力
 def excel():
     wb = load_workbook(file_path)
@@ -258,14 +272,18 @@ def excel():
     sheet['F14'] = eli4.value
     sheet['F15'] = eli5.value
     # 性能点検
-    sheet['C26'] = f'{set1} ± 3％'
-    sheet['C27'] = f'{set2} ± {set3}'
-    sheet['F26'] = peri1.value
-    sheet['F27'] = peri2.value
+    sheet['D26'] = f'：{round(set1, 1)} ± 0.1℃        （'
+    sheet['C27'] = f'最高血圧警報測定(上限値)：{('  '*(3-len(str(set2))))+str(str(set2))}mmHg（'
+    sheet['C28'] = f'最高血圧警報測定(下限値)：{('  '*(3-len(str(set3))))+str(str(set3))}mmHg（'
+    sheet['F23'] = peri1.value
+    sheet['F24'] = peri2.value
+    sheet['F26'] = peri4.value
+    sheet['F27'] = peri5.value
+    sheet['F28'] = peri6.value
     # 備考
-    sheet['B30'] = text_area1
+    sheet['B29'] = text_area1
     # 総合評価
-    sheet['H33'] = '合格' if not errorList else '不合格'
+    sheet['H32'] = '合格' if not errorList else '不合格'
     # 保存
     byte_xlsx = BytesIO()
     wb.save(byte_xlsx)

@@ -1,8 +1,6 @@
 # コメント
 '''
 外装点検は、総合評価の合否に考慮されていない
-数値入力の桁数、確認
-Excel側で小さい数字は四捨五入される
 Excelを変更したら、入力するセルの位置を確認
 '''
 
@@ -17,6 +15,7 @@ import streamlit as st
 import datetime
 from openpyxl import load_workbook
 from io import BytesIO
+import time
 
 
 
@@ -63,6 +62,16 @@ fni3 = stObject('機能点検', '機能点検３', '３．動作中・異常発�
 # Web
 st.title('心電図 点検報告書')
 st.caption('点検報告書を作成し、Excel形式で保存できます')
+col1, col2 = st.columns([1,2])
+with col1:
+    col1_1, col1_2, col1_3 = st.columns([4,1,8])
+    with col1_1:
+        st.page_link('Home.py', label='ホーム')
+    with col1_2:
+        st.write('**>**')
+    with col1_3:
+        st.page_link('pages/心電図.py', label='心電図')
+st.divider()
 
 
 
@@ -212,7 +221,26 @@ def excel():
 file = excel()
 file_name = st.session_state['ファイル名'] + '.xlsx'
 mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-download_button = st.download_button(label='ダウンロード', data=file, file_name=file_name, mime=mime, use_container_width=True)
 
-if download_button: st.success(file_name + ' をダウンロードしました')
-st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
+# 初期化
+if 'ダウンロードボタン' not in st.session_state: st.session_state['ダウンロードボタン'] = False
+if 'プログレスバー' not in st.session_state: st.session_state['プログレスバー'] = False
+
+# ダウンロードボタン
+if st.button('作成', use_container_width=True):
+    st.write(f'{file_name} を作成しました\n\n下部の「ダウンロード」からファイルをダウンロードしてください')
+    st.session_state['ダウンロードボタン'] = True
+if st.session_state['ダウンロードボタン']:
+    download_button = st.download_button(label='ダウンロード', data=file, file_name=file_name, mime=mime, use_container_width=True)
+    if download_button: st.session_state['プログレスバー'] = True
+
+# プログレスバー
+if st.session_state['プログレスバー']:
+    progress_bar = st.progress(0) # 進行バーの初期化
+    for i in range(100):
+        progress_bar.progress(i + 1)
+        time.sleep(0.01)
+    st.success(file_name + ' をダウンロードしました')
+    st.caption('※エラー発生時は、もう一度「ダウンロード」を押して下さい')
+    # 初期化
+    st.session_state.clear()
