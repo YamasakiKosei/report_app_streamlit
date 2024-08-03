@@ -68,9 +68,9 @@ module.CreateButton()
 # 個別設定
 def unique(sheet):
     # 性能点検
-    sheet['D26'] = f'：{' '*(11-len(str(set1))*2)}{str(set1)} ± 0.1 ℃（'
-    sheet['D27'] = f'：{' '*(23-len(str(set2))*2)}{str(set2)} ㎜Hg（'
-    sheet['D28'] = f'：{' '*(23-len(str(set3))*2)}{str(set3)} ㎜Hg（'
+    sheet['D26'] = f'：{" "*(11-len(str(set1))*2)}{str(set1)} ± 0.1 ℃（'
+    sheet['D27'] = f'：{" "*(23-len(str(set2))*2)}{str(set2)} ㎜Hg（'
+    sheet['D28'] = f'：{" "*(23-len(str(set3))*2)}{str(set3)} ㎜Hg（'
     sheet['F23'] = peri1.value
     sheet['F24'] = peri2.value
     sheet['F26'] = peri4.value
