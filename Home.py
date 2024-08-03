@@ -3,7 +3,7 @@ from PIL import Image
 
 st.title('Check Make')
 st.write('点検報告書作成アプリ')
-st.caption('Update：2024/07')
+st.caption('Update：2024/08')
 st.divider()
 
 st.header('Info')
