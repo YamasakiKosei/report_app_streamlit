@@ -9,7 +9,7 @@ st.divider()
 st.header('Info')
 st.write('医療機器の点検報告書を作成し、Excel形式で保存することができます')
 image = Image.open('data/点検報告書 例.png')
-st.image(image, width=250)
+st.image(image)
 st.divider()
 
 st.header('Pages')
