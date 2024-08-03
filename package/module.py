@@ -311,7 +311,7 @@ def ProgressBar():
             progress_bar.progress(i + 1)
             time.sleep(0.01)
         progress_bar.empty()
-        st.success(f'「{st.session_state['ファイル名'] + '.xlsx'} 」をダウンロードしました')
+        st.success(f'「{st.session_state['ファイル名']}.xlsx」をダウンロードしました')
         st.caption('※エラー発生時は、もう一度「作成」＞「ダウンロード」の順に押して下さい')
         st.session_state['ダウンロードボタン'] = False
         st.session_state['プログレスバー'] = False
