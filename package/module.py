@@ -306,11 +306,11 @@ def DownloadButton(data):
 # プログレスバー
 def ProgressBar():
     if st.session_state['プログレスバー']:
-        progress_bar = st.progress(0) # 進行バーの初期化
-        for i in range(100):
-            progress_bar.progress(i + 1)
-            time.sleep(0.01)
-        progress_bar.empty()
+        # progress_bar = st.progress(0) # 進行バーの初期化
+        # for i in range(100):
+        #     progress_bar.progress(i + 1)
+        #     time.sleep(0.01)
+        # progress_bar.empty()
         st.success(f'「{st.session_state["ファイル名"]}.xlsx」をダウンロードしました')
         st.caption('※エラー発生時は、もう一度「作成」＞「ダウンロード」の順に押して下さい')
         st.session_state['ダウンロードボタン'] = False
